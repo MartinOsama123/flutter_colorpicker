@@ -2,6 +2,7 @@
 
 library material_colorpicker;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -124,27 +125,6 @@ class _MaterialPickerState extends State<MaterialPicker> {
               : const EdgeInsets.only(bottom: 10),
           width: _isPortrait ? 60 : null,
           height: _isPortrait ? null : 60,
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            boxShadow: [
-              BoxShadow(
-                  color: (Theme.of(context).brightness == Brightness.light)
-                      ? (Theme.of(context).brightness == Brightness.light)
-                          ? Colors.grey[300]!
-                          : Colors.black38
-                      : Colors.black38,
-                  blurRadius: 10)
-            ],
-            border: _isPortrait
-                ? Border(
-                    right: BorderSide(
-                        color:
-                            (Theme.of(context).brightness == Brightness.light)
-                                ? Colors.grey[300]!
-                                : Colors.black38,
-                        width: 1))
-                : null,
-          ),
           child: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context)
                 .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
@@ -154,7 +134,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
                 _isPortrait
                     ? const Padding(padding: EdgeInsets.only(top: 7))
                     : const Padding(padding: EdgeInsets.only(left: 7)),
-                ..._colorTypes.map((List<Color> _colors) {
+                ..._colorTypes.mapIndexed((index, List<Color> _colors) {
                   Color _colorType = _colors[0];
                   return GestureDetector(
                     onTap: () {
@@ -163,6 +143,9 @@ class _MaterialPickerState extends State<MaterialPicker> {
                       setState(() => _currentColorType = _colors);
                     },
                     child: Container(
+                      width: 30,
+                      height: 30,
+                      margin: EdgeInsets.only(left: index == 0 ? 0 : 10),
                       decoration: BoxDecoration(
                         color: const Color(0x00000000),
                         border: _currentColorType == _colors
@@ -176,8 +159,6 @@ class _MaterialPickerState extends State<MaterialPicker> {
                         widthFactor: 0.9,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          width: 25,
-                          height: 25,
                           decoration: BoxDecoration(
                             color: _colorType,
                             shape: BoxShape.circle,
@@ -202,11 +183,8 @@ class _MaterialPickerState extends State<MaterialPicker> {
         behavior: ScrollConfiguration.of(context)
             .copyWith(dragDevices: PointerDeviceKind.values.toSet()),
         child: ListView(
-          scrollDirection: _isPortrait ? Axis.vertical : Axis.horizontal,
+          scrollDirection: !_isPortrait ? Axis.vertical : Axis.horizontal,
           children: [
-            _isPortrait
-                ? const Padding(padding: EdgeInsets.only(top: 15))
-                : const Padding(padding: EdgeInsets.only(left: 15)),
             ..._shadingTypes(_currentColorType).map((Map<Color, String> color) {
               final Color _color = color.keys.first;
               return GestureDetector(
@@ -216,20 +194,22 @@ class _MaterialPickerState extends State<MaterialPicker> {
                 },
                 child: Container(
                   color: const Color(0x00000000),
-                  margin: _isPortrait
+                  margin: !_isPortrait
                       ? const EdgeInsets.only(right: 10)
                       : const EdgeInsets.only(bottom: 10),
-                  padding: _isPortrait
+                  padding: !_isPortrait
                       ? const EdgeInsets.fromLTRB(0, 7, 0, 7)
                       : const EdgeInsets.fromLTRB(7, 0, 7, 0),
                   child: Align(
                     child: AnimatedContainer(
                       curve: Curves.fastOutSlowIn,
                       duration: const Duration(milliseconds: 500),
-                      width: _isPortrait
-                          ? (_currentShading == _color ? 250 : 230)
+                      margin: EdgeInsets.symmetric(
+                          horizontal: _currentShading == _color ? 5 : 10.0),
+                      width: !_isPortrait
+                          ? double.infinity
                           : (_currentShading == _color ? 50 : 30),
-                      height: _isPortrait ? 50 : 220,
+                      height: !_isPortrait ? 33 : 220,
                       decoration: BoxDecoration(
                         color: _color,
                         boxShadow: _currentShading == _color
@@ -260,7 +240,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
                                 : null,
                       ),
                       child: widget.enableLabel
-                          ? _isPortrait
+                          ? !_isPortrait
                               ? Row(
                                   children: [
                                     Text(
@@ -311,7 +291,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
                 ),
               );
             }),
-            _isPortrait
+            !_isPortrait
                 ? const Padding(padding: EdgeInsets.only(top: 15))
                 : const Padding(padding: EdgeInsets.only(left: 15)),
           ],
@@ -337,7 +317,6 @@ class _MaterialPickerState extends State<MaterialPicker> {
       );
     } else {
       return SizedBox(
-        width: 500,
         height: 300,
         child: Column(
           children: <Widget>[
