@@ -143,13 +143,7 @@ class _MaterialPickerState extends State<MaterialPicker> {
                                 ? Colors.grey[300]!
                                 : Colors.black38,
                         width: 1))
-                : Border(
-                    top: BorderSide(
-                        color:
-                            (Theme.of(context).brightness == Brightness.light)
-                                ? Colors.grey[300]!
-                                : Colors.black38,
-                        width: 1)),
+                : null,
           ),
           child: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context)
@@ -169,11 +163,17 @@ class _MaterialPickerState extends State<MaterialPicker> {
                       setState(() => _currentColorType = _colors);
                     },
                     child: Container(
-                      color: const Color(0x00000000),
-                      padding: _isPortrait
-                          ? const EdgeInsets.fromLTRB(0, 7, 0, 7)
-                          : const EdgeInsets.fromLTRB(7, 0, 7, 0),
-                      child: Align(
+                      decoration: BoxDecoration(
+                        color: const Color(0x00000000),
+                        border: _currentColorType == _colors
+                            ? Border.all(color: Colors.grey, width: 1)
+                            : null,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                          child: FractionallySizedBox(
+                        heightFactor: 0.9,
+                        widthFactor: 0.9,
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           width: 25,
@@ -181,34 +181,9 @@ class _MaterialPickerState extends State<MaterialPicker> {
                           decoration: BoxDecoration(
                             color: _colorType,
                             shape: BoxShape.circle,
-                            boxShadow: _currentColorType == _colors
-                                ? [
-                                    _colorType == Theme.of(context).cardColor
-                                        ? BoxShadow(
-                                            color:
-                                                (Theme.of(context).brightness ==
-                                                        Brightness.light)
-                                                    ? Colors.grey[300]!
-                                                    : Colors.black38,
-                                            blurRadius: 10,
-                                          )
-                                        : BoxShadow(
-                                            color: _colorType,
-                                            blurRadius: 10,
-                                          ),
-                                  ]
-                                : null,
-                            border: _colorType == Theme.of(context).cardColor
-                                ? Border.all(
-                                    color: (Theme.of(context).brightness ==
-                                            Brightness.light)
-                                        ? Colors.grey[300]!
-                                        : Colors.black38,
-                                    width: 1)
-                                : null,
                           ),
                         ),
-                      ),
+                      )),
                     ),
                   );
                 }),
