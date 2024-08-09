@@ -188,31 +188,35 @@ class _MaterialPickerState extends State<MaterialPicker> {
             ..._shadingTypes(_currentColorType).map((Map<Color, String> color) {
               final Color _color = color.keys.first;
               return GestureDetector(
-                onTap: () {
-                  setState(() => _currentShading = _color);
-                  widget.onColorChanged(_color);
-                },
-                child: Container(
-                  color: const Color(0x00000000),
-                  margin: !_isPortrait
-                      ? const EdgeInsets.only(right: 10)
-                      : const EdgeInsets.only(bottom: 10),
-                  padding: !_isPortrait
-                      ? const EdgeInsets.fromLTRB(0, 7, 0, 7)
-                      : const EdgeInsets.fromLTRB(7, 0, 7, 0),
-                  child: Align(
-                    child: AnimatedContainer(
-                      curve: Curves.fastOutSlowIn,
-                      duration: const Duration(milliseconds: 500),
-                      margin: EdgeInsets.symmetric(
-                          horizontal: _currentShading == _color ? 5 : 10.0),
-                      width: !_isPortrait
-                          ? double.infinity
-                          : (_currentShading == _color ? 50 : 30),
-                      height: !_isPortrait ? 33 : 220,
-                      decoration: BoxDecoration(
-                        color: _color,
-                        boxShadow: _currentShading == _color
+                  onTap: () {
+                    setState(() => _currentShading = _color);
+                    widget.onColorChanged(_color);
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        color: const Color(0x00000000),
+                        margin: !_isPortrait
+                            ? const EdgeInsets.only(right: 10)
+                            : const EdgeInsets.only(bottom: 10),
+                        padding: !_isPortrait
+                            ? const EdgeInsets.fromLTRB(0, 7, 0, 7)
+                            : const EdgeInsets.fromLTRB(7, 0, 7, 0),
+                        child: Align(
+                          child: AnimatedContainer(
+                            curve: Curves.fastOutSlowIn,
+                            duration: const Duration(milliseconds: 500),
+                            margin: EdgeInsets.symmetric(
+                                horizontal:
+                                    _currentShading == _color ? 5 : 10.0),
+                            width: !_isPortrait
+                                ? double.infinity
+                                : (_currentShading == _color ? 50 : 30),
+                            height: !_isPortrait ? 35 : 220,
+                            decoration: BoxDecoration(
+                              color: _color,
+                              /* boxShadow: _currentShading == _color
                             ? [
                                 (_color == Colors.white) ||
                                         (_color == Colors.black)
@@ -237,59 +241,79 @@ class _MaterialPickerState extends State<MaterialPicker> {
                                         ? Colors.grey[300]!
                                         : Colors.black38,
                                     width: 1)
-                                : null,
-                      ),
-                      child: widget.enableLabel
-                          ? !_isPortrait
-                              ? Row(
-                                  children: [
-                                    Text(
-                                      '  ${color.values.first}',
-                                      style: TextStyle(
-                                          color: useWhiteForeground(_color)
-                                              ? Colors.white
-                                              : Colors.black),
-                                    ),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                          '#${(_color.toString().replaceFirst('Color(0xff', '').replaceFirst(')', '')).toUpperCase()}  ',
-                                          style: TextStyle(
-                                            color: useWhiteForeground(_color)
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: FontWeight.bold,
+                                : null,*/
+                            ),
+                            child: widget.enableLabel
+                                ? !_isPortrait
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                            '  ${color.values.first}',
+                                            style: TextStyle(
+                                                color:
+                                                    useWhiteForeground(_color)
+                                                        ? Colors.white
+                                                        : Colors.black),
+                                          ),
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                '#${(_color.toString().replaceFirst('Color(0xff', '').replaceFirst(')', '')).toUpperCase()}  ',
+                                                style: TextStyle(
+                                                  color:
+                                                      useWhiteForeground(_color)
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : AnimatedOpacity(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        opacity:
+                                            _currentShading == _color ? 1 : 0,
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 16),
+                                          alignment: Alignment.topCenter,
+                                          child: Text(
+                                            color.values.first,
+                                            style: TextStyle(
+                                              color: useWhiteForeground(_color)
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
+                                            softWrap: false,
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 300),
-                                  opacity: _currentShading == _color ? 1 : 0,
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 16),
-                                    alignment: Alignment.topCenter,
-                                    child: Text(
-                                      color.values.first,
-                                      style: TextStyle(
-                                        color: useWhiteForeground(_color)
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                      softWrap: false,
-                                    ),
-                                  ),
-                                )
-                          : const SizedBox(),
-                    ),
-                  ),
-                ),
-              );
+                                      )
+                                : const SizedBox(),
+                          ),
+                        ),
+                      ),
+                      if (_currentShading == _color)
+                        Container(
+                          width: 20,
+                          height: 20,
+                          margin: const EdgeInsets.symmetric(vertical: 3),
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.white),
+                          padding: const EdgeInsets.all(1),
+                          child: Icon(
+                            Icons.check_rounded,
+                            color: _color,
+                            size: 12,
+                          ),
+                        )
+                    ],
+                  ));
             }),
             !_isPortrait
                 ? const Padding(padding: EdgeInsets.only(top: 15))
